@@ -1,0 +1,13 @@
+name = "NumericalMethods"
+uuid = "fd3c36b2-d619-4b64-906f-73477278ed8e"
+authors = ["Michael Bennett"]
+version = "0.1.0"
+
+[compat]
+julia = "1"
+
+[extras]
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[targets]
+test = ["Test"]
