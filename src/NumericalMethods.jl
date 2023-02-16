@@ -43,8 +43,36 @@ Compute the derivative of `f` at `x` using a two-sided difference quotient.
 """
 function numderiv_two_side(f::Function, x::Real; δ::Real=1.0e-6)
     h = δ * x
-    deriv = (f(x+h) - f(x-h))/(2h)
+    deriv = (f(x+h) - f(x-h))/(2*h)
     return deriv
+end
+
+function numderiv_partial(
+        f::Function, x::AbstractVector, i::Integer; δ::Real=1.0e-6
+    )
+    h = δ * x
+    h_vct = zeros(len(x)); h_vct[i] = h
+    deriv = (f(x+h_vct) - f(x-h_vct))/(2 * h)
+    return deriv
+end
+
+function gradient(f::Function, x::AbstractVector; δ::Real=1.0e-6)
+    n = length(x)
+    grad = Matrix{Float64}(undef, n, 1)
+    for i in 1:n
+        grad[i, 1] = numderiv_partial(f, x, i; δ=δ)
+    end
+    return grad
+end
+
+function hessian(f::Function, x::AbstractVector; δ::Real=1e-6)
+    n = length(x)
+    hess = Matrix{Float64}(undef, n, n)
+    for i ∈ 1:n, j ∈ 1:n
+        partial_i(z) = numderiv_partial(f, z, i; δ=δ)
+        hess[i, j] = numderiv_partial(partial_i, x, j; δ=δ)
+    end
+    return hess
 end
 
 """
