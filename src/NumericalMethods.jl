@@ -57,7 +57,7 @@ function numderiv_partial(
     return deriv
 end
 
-function gradient(f::Function, x::AbstractVector; δ::Real=1.0e-6)
+function jacobian(f::Function, x::AbstractVector; δ::Real=1.0e-6)
     n = length(x)
     grad = Matrix{Float64}(undef, n, 1)
     for i in 1:n
