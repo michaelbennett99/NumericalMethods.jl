@@ -3,6 +3,7 @@ module NumericalMethods
 using ForwardDiff, LinearAlgebra
 
 export numderiv_one_side, numderiv_two_side
+export gradient, hessian
 export bisect, secant, func_iter, newton, brent
 
 """
@@ -50,9 +51,9 @@ end
 function numderiv_partial(
         f::Function, x::AbstractVector, i::Integer; δ::Real=1.0e-6
     )
-    h = δ * x
-    h_vct = zeros(len(x)); h_vct[i] = h
-    deriv = (f(x+h_vct) - f(x-h_vct))/(2 * h)
+    h = δ * x[i]
+    h_vct = zeros(length(x)); h_vct[i] = h
+    deriv = (f(x .+ h_vct) - f(x .- h_vct))/(2 * h)
     return deriv
 end
 
