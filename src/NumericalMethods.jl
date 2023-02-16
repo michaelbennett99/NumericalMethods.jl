@@ -2,7 +2,7 @@ module NumericalMethods
 
 using ForwardDiff, LinearAlgebra
 
-export numderiv_one_side, numderiv_two_side
+export numderiv_one_side, numderiv_two_side, numderiv_second
 export gradient, hessian
 export bisect, secant, func_iter, newton, brent
 
@@ -48,6 +48,46 @@ function numderiv_two_side(f::Function, x::Real; δ::Real=1.0e-6)
     return deriv
 end
 
+"""
+    numderiv_second(f::Function, x::Real; δ::Real=1.0e-6)
+
+Compute the second derivative of `f` at `x` using a two-sided difference
+quotient.
+
+# Arguments
+
+- `f::Function`: The function to differentiate.
+- `x::Real`: The point at which to differentiate `f`.
+- `δ::Real=1.0e-6`: The step size to use in the difference quotient.
+
+# Returns
+
+- `deriv::Real`: The second derivative of `f` at `x`.
+"""
+function numderiv_second(f::Function, x::Real; δ::Real=1.0e-6)
+    first(z) = numderiv_two_side(f, z; δ=δ)
+    return numderiv_two_side(first, x; δ=δ)
+end
+
+"""
+    numderiv_partial(f::Function, x::AbstractVector, i::Integer; δ::Real=1.0e-6)
+
+Compute the partial derivative of `f` at `x` with respect to the `i`th
+component of `x` using a two-sided difference quotient.
+
+# Arguments
+
+- `f::Function`: The function to differentiate.
+- `x::AbstractVector`: The point at which to differentiate `f`.
+- `i::Integer`: The index of the component of `x` with respect to which to
+  differentiate `f`.
+- `δ::Real=1.0e-6`: The step size to use in the difference quotient.
+
+# Returns
+
+- `deriv::Real`: The partial derivative of `f` at `x` with respect to the
+  `i`th component of `x`.
+"""
 function numderiv_partial(
         f::Function, x::AbstractVector, i::Integer; δ::Real=1.0e-6
     )
@@ -57,7 +97,22 @@ function numderiv_partial(
     return deriv
 end
 
-function jacobian(f::Function, x::AbstractVector; δ::Real=1.0e-6)
+"""
+    gradient(f::Function, x::AbstractVector; δ::Real=1.0e-6)
+
+Compute the gradient of `f` at `x` using a two-sided difference quotient.
+
+# Arguments
+
+- `f::Function`: The function to differentiate.
+- `x::AbstractVector`: The point at which to differentiate `f`.
+- `δ::Real=1.0e-6`: The step size to use in the difference quotient.
+
+# Returns
+
+- `grad::AbstractVector`: The gradient of `f` at `x`.
+"""
+function gradient(f::Function, x::AbstractVector; δ::Real=1.0e-6)
     n = length(x)
     grad = Matrix{Float64}(undef, n, 1)
     for i in 1:n
@@ -66,6 +121,22 @@ function jacobian(f::Function, x::AbstractVector; δ::Real=1.0e-6)
     return grad
 end
 
+
+"""
+    hessian(f::Function, x::AbstractVector; δ::Real=1.0e-6)
+
+Compute the Hessian of `f` at `x` using a two-sided difference quotient.
+
+# Arguments
+
+- `f::Function`: The function to differentiate.
+- `x::AbstractVector`: The point at which to differentiate `f`.
+- `δ::Real=1.0e-6`: The step size to use in the difference quotient.
+
+# Returns
+
+- `hess::AbstractMatrix`: The Hessian of `f` at `x`.
+"""
 function hessian(f::Function, x::AbstractVector; δ::Real=1e-6)
     n = length(x)
     hess = Matrix{Float64}(undef, n, n)
