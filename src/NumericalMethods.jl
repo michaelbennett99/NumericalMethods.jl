@@ -114,9 +114,9 @@ Compute the gradient of `f` at `x` using a two-sided difference quotient.
 """
 function gradient(f::Function, x::AbstractVector; δ::Real=1.0e-6)
     n = length(x)
-    grad = Matrix{Float64}(undef, n, 1)
+    grad = Vector{Float64}(undef, n)
     for i in 1:n
-        grad[i, 1] = numderiv_partial(f, x, i; δ=δ)
+        grad[i] = numderiv_partial(f, x, i; δ=δ)
     end
     return grad
 end
