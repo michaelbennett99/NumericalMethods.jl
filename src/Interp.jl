@@ -7,8 +7,6 @@ export linear_interpolation, cubic_interpolation
 struct Linear{N, T}
     x::SVector{N, T}
     y::SVector{N, T}
-    x_min::T
-    x_max::T
 end
 
 """
@@ -29,7 +27,7 @@ function linear_interpolation(x::Vector{<:Real}, y::Vector{<:Real})::Linear
     if ! issorted(x)
         error("x must be sorted")
     end
-    return Linear{length(x), eltype(x)}(x, y, x[1], x[end])
+    return Linear{length(x), eltype(x)}(x, y)
 end
 
 
@@ -48,7 +46,7 @@ Evaluate the linear interpolation function at `x`.
 - `y::Real`: The value of the interpolation function at `x`.
 """
 function (f::Linear)(x)
-    if x < f.x_min || x > f.x_max
+    if x < f.x[1] || x > f.x[end]
         error("x is out of range")
     elseif x ∈ f.x
         return f.y[findfirst(f.x .== x)]
@@ -60,6 +58,10 @@ function (f::Linear)(x)
     end
 end
 
+
+"""
+A callable cubic spline interpolation object.
+"""
 struct Spline{N, T}
     x::SVector{N, T}
     y::SVector{N, T}
