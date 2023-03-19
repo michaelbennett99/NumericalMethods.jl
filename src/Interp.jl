@@ -4,6 +4,10 @@ using StaticArrays, LinearAlgebra
 
 export linear_interpolation, cubic_interpolation
 
+
+"""
+A callable linear interpolation object.
+"""
 struct Linear{N, T}
     x::SVector{N, T}
     y::SVector{N, T}
@@ -29,7 +33,6 @@ function linear_interpolation(x::Vector{<:Real}, y::Vector{<:Real})::Linear
     end
     return Linear{length(x), eltype(x)}(x, y)
 end
-
 
 """
     (f::Linear)(x)
