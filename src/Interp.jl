@@ -1,4 +1,4 @@
-module Interpolation
+module Interp
 
 using StaticArrays, LinearAlgebra
 
