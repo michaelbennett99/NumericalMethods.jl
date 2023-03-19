@@ -1,48 +1,37 @@
-"""
-    numderiv_one_side(f::Function, x::Real; δ::Real=1.0e-6)
+module Deriv
 
-Compute the derivative of `f` at `x` using a one-sided difference quotient.
+"""
+    differentiate(f::Function, x::Real; δ::Real=1.0e-6, two_side::Bool=true)
+
+Compute the derivative of `f` at `x` using a one or two-sided difference
+quotient.
 
 # Arguments
 
 - `f::Function`: The function to differentiate.
 - `x::Real`: The point at which to differentiate `f`.
 - `δ::Real=1.0e-6`: The step size to use in the difference quotient.
+- `two_side::Bool=true`: Whether to use a two-sided difference quotient.
 
 # Returns
 
 - `deriv`: The derivative of `f` at `x`.
 """
-function numderiv_one_side(f::Function, x::Real; δ::Real=1.0e-6)
+function differentiate(
+        f::Function, x::Real; δ::Real=1.0e-6, two_side::Bool=true
+    )
     h = δ * x
-    deriv = (f(x+h) - f(x))/h
-    return deriv
-end
-
-"""
-    numderiv_two_side(f::Function, x::Real; δ::Real=1.0e-6)
-
-Compute the derivative of `f` at `x` using a two-sided difference quotient.
-
-# Arguments
-
-- `f::Function`: The function to differentiate.
-- `x::Real`: The point at which to differentiate `f`.
-- `δ::Real=1.0e-6`: The step size to use in the difference quotient.
-
-# Returns
-
-- `deriv`: The derivative of `f` at `x`.
-"""
-function numderiv_two_side(f::Function, x::Real; δ::Real=1.0e-6)
-    h = δ * x
-    deriv = (f(x+h) - f(x-h))/(2*h)
+    if two_side == true
+        deriv = (f(x+h) - f(x-h))/(2*h)
+    else
+        deriv = (f(x+h) - f(x))/h
+    end
     return deriv
 end
 
 
 """
-    numderiv_second(f::Function, x::Real; δ::Real=1.0e-6)
+    twice_differentiate(f::Function, x::Real; δ::Real=1.0e-6)
 
 Compute the second derivative of `f` at `x` using a two-sided difference
 quotient.
@@ -57,13 +46,13 @@ quotient.
 
 - `deriv`: The second derivative of `f` at `x`.
 """
-function numderiv_second(f::Function, x::Real; δ::Real=1.0e-6)
-    first(z) = numderiv_two_side(f, z; δ=δ)
-    return numderiv_two_side(first, x; δ=δ)
+function twice_differentiate(f::Function, x::Real; δ::Real=1.0e-6)
+    first(z) = differentiate(f, z; δ=δ)
+    return differentiate(first, x; δ=δ)
 end
 
 """
-    numderiv_partial(f::Function, x::AbstractVector, i::Integer; δ::Real=1.0e-6)
+    partial(f::Function, x::AbstractVector, i::Integer; δ::Real=1.0e-6)
 
 Compute the partial derivative of `f` at `x` with respect to the `i`th
 component of `x` using a two-sided difference quotient.
@@ -81,7 +70,7 @@ component of `x` using a two-sided difference quotient.
 - `deriv`: The partial derivative of `f` at `x` with respect to the
   `i`th component of `x`.
 """
-function numderiv_partial(
+function partial(
         f::Function, x::AbstractVector, i::Integer; δ::Real=1.0e-6
     )
     h = δ * x[i]
@@ -110,7 +99,7 @@ function gradient(f::Function, x::AbstractVector; δ::Real=1.0e-6)::Vector
     n = length(x)
     grad = Vector{eltype(x)}(undef, n)
     for i in 1:n
-        grad[i] = numderiv_partial(f, x, i; δ=δ)
+        grad[i] = partial(f, x, i; δ=δ)
     end
     return grad
 end
@@ -134,8 +123,10 @@ function hessian(f::Function, x::AbstractVector; δ::Real=1e-6)::Matrix
     n = length(x)
     hess = Matrix{eltype(x)}(undef, n, n)
     for i ∈ 1:n, j ∈ 1:n
-        partial_i(z) = numderiv_partial(f, z, i; δ=δ)
-        hess[i, j] = numderiv_partial(partial_i, x, j; δ=δ)
+        partial_i(z) = partial(f, z, i; δ=δ)
+        hess[i, j] = partial(partial_i, x, j; δ=δ)
     end
     return hess
 end
+
+end # module
