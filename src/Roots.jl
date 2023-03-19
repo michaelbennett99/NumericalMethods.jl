@@ -1,3 +1,5 @@
+module Roots
+
 using LinearAlgebra, ForwardDiff
 
 """
@@ -401,3 +403,5 @@ function brent(
     end
     return b, fb, iter
 end
+
+end # module
