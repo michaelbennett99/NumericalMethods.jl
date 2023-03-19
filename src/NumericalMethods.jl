@@ -7,8 +7,8 @@ include("Deriv.jl")
 include("Roots.jl")
 include("Min.jl")
 
-using .Roots, .Min
+using .Deriv, .Roots, .Min
 
-export Roots, Min
+export Deriv, Roots, Min
 
 end # module
