@@ -8,17 +8,17 @@ using Test
         @test Deriv.differentiate(sin, x_i) ≈ cos(x_i)
         @test Deriv.twice_differentiate(sin, x_i) ≈ -sin(x_i)
     end
-    f(x, y) = x^2 + y^2
-    f_x(x, y) = 2x
-    f_y(x, y) = 2y
-    f_xx(x, y) = 2
-    J(x, y) = [f_x(x, y) f_y(x, y)]
-    H(x, y) = [f_xx(x, y) 0; 0 f_xx(x, y)]
+    f(x) = x[1]^2 + x[2]^2
+    f_1(x) = 2x[1]
+    f_2(x) = 2x[2]
+    f_zz(x) = 2
+    J(x) = [f_1(x) f_2(x)]
+    H(x) = [f_zz(x) 0; 0 f_zz(x)]
     for x_i in x[1]
         for y_i in x[1]
-            @test Deriv.gradient(f, [x_i y_i]) ≈ J(x_i, y_i)
-            @test Deriv.hessian(f, [x_i y_i]) ≈ H(x_i, y_i)
+            z_i = [x_i, y_i]
+            @test Deriv.gradient(f, z_i) ≈ J(z_i)
+            @test Deriv.hessian(f, z_i) ≈ H(z_i)
         end
     end
-    # Write your tests here.
 end
