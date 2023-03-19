@@ -4,8 +4,7 @@ using ForwardDiff, LinearAlgebra
 using .Roots, .Min
 
 export numderiv_one_side, numderiv_two_side, numderiv_second, gradient, hessian
-export Roots.bisect, Roots.secant, Roots.brent, Roots.newton
-export Min.brent, Min.newton
+export bisect, secant, brent, newton
 
 include("Utils.jl")
 include("Deriv.jl")
