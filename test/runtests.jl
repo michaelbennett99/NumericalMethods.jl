@@ -16,8 +16,8 @@ using Test
     H(x, y) = [f_xx(x, y) 0; 0 f_xx(x, y)]
     for x_i in x
         for y_i in x
-            @test gradient(f, [x_i, y_i]) ≈ J(x_i, y_i)
-            @test hessian(f, [x_i, y_i]) ≈ H(x_i, y_i)
+            @test Deriv.gradient(f, [x_i, y_i]) ≈ J(x_i, y_i)
+            @test Deriv.hessian(f, [x_i, y_i]) ≈ H(x_i, y_i)
         end
     end
     # Write your tests here.
