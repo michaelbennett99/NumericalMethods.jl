@@ -9,8 +9,6 @@ include("Min.jl")
 
 using .Roots, .Min
 
-export numderiv_one_side, numderiv_two_side, numderiv_second, gradient, hessian
-export Roots.newton, Roots.secant, Roots.bisect, Roots.brent
-export Min.newton, Min.brent
+print(typeof(Roots.newton))
 
 end # module
