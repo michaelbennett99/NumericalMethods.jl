@@ -1,7 +1,7 @@
 module NumericalMethods
 
 using ForwardDiff, LinearAlgebra
-import .Roots, .Min
+using .Roots, .Min
 
 export numderiv_one_side, numderiv_two_side, numderiv_second, gradient, hessian
 export Roots.bisect, Roots.secant, Roots.brent, Roots.newton
