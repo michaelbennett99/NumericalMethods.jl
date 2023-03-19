@@ -2,6 +2,8 @@ module Roots
 
 using LinearAlgebra, ForwardDiff
 
+export bisect, secant, brent, newton
+
 """
     bisect(f, xlow, xhigh; tol=1.0e-6, maxiter=30, verbose=false, kwargs...)
 
