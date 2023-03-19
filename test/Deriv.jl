@@ -1,7 +1,7 @@
 using NumericalMethods
-using Test
+using TestItems
 
-@testitem "Differentiation" begin
+@testitem "Univariate" begin
     ≈(x, y) = isapprox(x, y; atol=1e-4, rtol=1e-4)
     x = collect(range(0, 2π, step=π/4))
     for x_i in x
@@ -9,6 +9,11 @@ using Test
         @test Deriv.differentiate(sin, x_i) ≈ cos(x_i)
         @test Deriv.twice_differentiate(sin, x_i) ≈ -sin(x_i)
     end
+end
+
+@testitem "Multivariate" begin
+    ≈(x, y) = isapprox(x, y; atol=1e-4, rtol=1e-4)
+    x = collect(range(0, 2π, step=π/4))
     f(x) = x[1]^2 + x[2]^2
     f_1(x) = 2x[1]
     f_2(x) = 2x[2]
