@@ -12,7 +12,7 @@ using Test
     f_1(x) = 2x[1]
     f_2(x) = 2x[2]
     f_zz(x) = 2
-    J(x) = [f_1(x) f_2(x)]
+    J(x) = reshape([f_1(x) f_2(x)], (1, 2))
     H(x) = [f_zz(x) 0; 0 f_zz(x)]
     for x_i in x[1]
         for y_i in x[1]
