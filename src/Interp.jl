@@ -4,7 +4,6 @@ using StaticArrays, LinearAlgebra
 
 export linear_interpolation, cubic_interpolation
 
-
 """
 A callable linear interpolation object.
 """
