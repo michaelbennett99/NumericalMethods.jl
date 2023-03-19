@@ -2,7 +2,7 @@ using NumericalMethods
 using Test
 
 @testset "Differentiation" begin
-    const at = 1e-4
+    at = 1e-4
     x = collect(range(0, 2π, step=π/4))
     for x_i in x
         @test Deriv.differentiate(sin, x_i; two_side=false) ≈ cos(x_i) atol = at
