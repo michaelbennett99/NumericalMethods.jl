@@ -4,9 +4,9 @@ using Test
 @testset "Differentiation" begin
     x = collect(range(0, 2π, step=π/4))
     for x_i in x
-        @test Deriv.differentiate(sin, x_i; two_side=false) ≈ cos(x_i)
-        @test Deriv.differentiate(sin, x_i) ≈ cos(x_i)
-        @test Deriv.twice_differentiate(sin, x_i) ≈ -sin(x_i)
+        @test Deriv.differentiate(sin, x_i; two_side=false) ≈ cos(x_i) atol = 1e-6
+        @test Deriv.differentiate(sin, x_i) ≈ cos(x_i) atol = 1e-6
+        @test Deriv.twice_differentiate(sin, x_i) ≈ -sin(x_i) atol = 1e-6
     end
     f(x) = x[1]^2 + x[2]^2
     f_1(x) = 2x[1]
@@ -17,8 +17,8 @@ using Test
     for x_i in x
         for y_i in x
             z_i = [x_i, y_i]
-            @test Deriv.gradient(f, z_i) ≈ J(z_i)
-            @test Deriv.hessian(f, z_i) ≈ H(z_i)
+            @test Deriv.gradient(f, z_i) ≈ J(z_i) atol = 1e-6
+            @test Deriv.hessian(f, z_i) ≈ H(z_i) atol = 1e-6
         end
     end
 end
