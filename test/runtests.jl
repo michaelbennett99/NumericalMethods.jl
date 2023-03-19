@@ -4,9 +4,9 @@ using Test
 @testset "Differentiation" begin
     x = collect(range(0, 2π, step=π/4))
     for x_i in x
-        @test numderiv_one_side(sin, x_i) ≈ cos(x_i)
-        @test numderiv_two_side(sin, x_i) ≈ cos(x_i)
-        @test numderiv_second(sin, x_i) ≈ -sin(x_i)
+        @test Deriv.differentiate(sin, x_i; two_side=false) ≈ cos(x_i)
+        @test Deriv.differentiate(sin, x_i) ≈ cos(x_i)
+        @test Deriv.twice_differentiate(sin, x_i) ≈ -sin(x_i)
     end
     f(x, y) = x^2 + y^2
     f_x(x, y) = 2x
