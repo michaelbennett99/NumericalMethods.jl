@@ -1,3 +1,5 @@
+using LinearAlgebra, ForwardDiff
+
 """
     bisect(f, xlow, xhigh; tol=1.0e-6, maxiter=30, verbose=false, kwargs...)
 
@@ -12,7 +14,7 @@ Such a method will not work in multiple dimensions.
 - `xhigh::Real`: The upper bound of the interval.
 - `tol::Real=1.0e-6`: The tolerance for the root.
 - `maxiter::Integer=30`: The maximum number of iterations to perform.
-- `kwargs`: Additional keyword arguments to pass to `f`.
+- `kwargs...`: Additional keyword arguments to pass to `f`.
 
 # Returns
 
@@ -64,10 +66,8 @@ function bisect(
     end
  
     if (diff > tol)
-        throw(
-            ArgumentError(
-                "Did not converge: xlow = $xlow, xhigh = $xhigh, diff = $diff"
-            )
+        error(
+            "Did not converge: xlow = $xlow, xhigh = $xhigh, diff = $diff"
         )           
     end
  
@@ -84,11 +84,11 @@ Use the secant method to find the root of a function f.
 
 # Arguments
 
-- `f`: The function to find the root of.
-- `x_0`: The first guess.
-- `x_1`: The second guess.
-- `tol=1e-6`: The tolerance for the root.
-- `max_iter=1000`: The maximum number of iterations to perform.
+- `f::Function`: The function to find the root of.
+- `x_0::Real`: The first guess.
+- `x_1::Real`: The second guess.
+- `tol::Real=1e-6`: The tolerance for the root.
+- `max_iter::Integer=1000`: The maximum number of iterations to perform.
 - `kwargs...`: Additional keyword arguments to pass to `f`.
 
 # Returns
@@ -119,7 +119,7 @@ function secant(
     end
 
     if (diff > tol)
-        throw(ArgumentError("Did not converge: diff = $diff"))           
+        error("Did not converge: diff = $diff")
     end
 
     xroot = x_1
@@ -129,7 +129,7 @@ function secant(
 end
 
 """
-    func_iter(f, x_0; tol=1e-6, max_iter=1000, kwargs...)
+    func_iter(f, x_0; λ::Real=0, tol=1e-6, max_iter=1000, kwargs...)
 
 Use the functional iteration method to find the root of a function f. This
 method works for functions from R^n to R^n, where n ≥ 1.
@@ -137,8 +137,8 @@ method works for functions from R^n to R^n, where n ≥ 1.
 # Arguments
 
 - `f::Function`: The function to find the root of.
-- `x_0`: The first guess.
-- `λ=0`: The relaxation parameter.
+- `x_0::Union{AbstractVector{<:Real}, Real}`: The first guess.
+- `λ::Real=0`: The relaxation parameter.
 - `tol=1e-6`: The tolerance for the root.
 - `max_iter=1000`: The maximum number of iterations to perform.
 - `kwargs...`: Additional keyword arguments to pass to `f`.
@@ -147,6 +147,7 @@ method works for functions from R^n to R^n, where n ≥ 1.
 
 - `xroot`: The root of `f`.
 - `fxroot`: The value of `f` at the root.
+- `iter`: The number of iterations performed.
 """
 function func_iter(
         f::Function, x_0::Union{AbstractVector{<:Real}, Real};
@@ -171,7 +172,7 @@ function func_iter(
     end
 
     if (diff > tol)
-        throw(ArgumentError("Did not converge: diff = $diff"))           
+        error("Did not converge: diff = $diff")
     end
 
     xroot = x_0
@@ -182,14 +183,14 @@ end
 
 
 """
-    newton(f::Function, x_0; tol=1e-6, max_iter=1000, kwargs...)
+    newton(f, x_0; tol=1e-6, max_iter=1000, kwargs...)
 
-Use Newton's method to find the root of a function f.
+Use Newton's method to find the root of a function f: R → R.
 
 # Arguments
 
 - `f::Function`: The function to find the root of.
-- `x_0`: The first guess.
+- `x_0::Real`: The first guess.
 - `tol=1e-6`: The tolerance for the root.
 - `max_iter=1000`: The maximum number of iterations to perform.
 - `kwargs...`: Additional keyword arguments to pass to `f`.
@@ -201,7 +202,7 @@ Use Newton's method to find the root of a function f.
 - `iter`: The number of iterations performed.
 """
 function newton(
-        func::Function, x_0::Float64;
+        func::Function, x_0::Real;
         tol::Real=1e-6, max_iter::Integer=1000, kwargs...
     )
     f(x) = func(x; kwargs...)
@@ -225,7 +226,7 @@ function newton(
     end
 
     if (diff > tol)
-        throw(ArgumentError("Did not converge: diff = $diff"))           
+        error("Did not converge: diff = $diff")
     end
 
     xroot = x_0
@@ -235,12 +236,9 @@ function newton(
 end
 
 """
-    newton(
-        f::Function, x_0::AbstractVector{<:Real};
-        tol::Real=1e-6, max_iter::Integer=1000, kwargs...
-    )
+    newton(f, x_0; tol=1e-6, max_iter=1000, kwargs...)
 
-Use Newton's method to find the root of a multivariate function f.
+Use Newton's method to find the root of a multivariate function f: R^n → R.
 
 # Arguments
 
@@ -268,7 +266,7 @@ function newton(
     while diff > tol
         iter += 1
 
-        x_1 = x_0 .- inv(J(x_0)) * f(x_0)
+        x_1 = x_0 .- J(x_0) \ f(x_0)
 
         diff = norm(x_1 - x_0)
 
@@ -280,7 +278,7 @@ function newton(
     end
 
     if (diff > tol)
-        throw(ArgumentError("Did not converge: diff = $diff"))           
+        error("Did not converge: diff = $diff")
     end
 
     xroot = x_0
@@ -297,17 +295,18 @@ Use Brent's method to find the root of a function f.
 # Arguments
 
 - `f::Function`: The function to find the root of.
-- `x_0`: The first guess.
-- `x_1`: The second guess.
-- `rtol=1e-6`: The tolerance for the root.
-- `ftol=1e-6`: The tolerance for the function value.
-- `max_iter=1000`: The maximum number of iterations to perform.
+- `x_0::Real`: The first guess.
+- `x_1::Real`: The second guess.
+- `rtol::Real=1e-6`: The tolerance for the root.
+- `ftol::Real=1e-6`: The tolerance for the function value.
+- `max_iter::Integer=1000`: The maximum number of iterations to perform.
 - `kwargs...`: Additional keyword arguments to pass to `f`.
 
 # Returns
 
 - `xroot`: The root of `f`.
 - `fxroot`: The value of `f` at the root.
+- `iter`: The number of iterations performed.
 """
 function brent(
         func::Function, x_0::Real, x_1::Real;
