@@ -9,6 +9,6 @@ include("Min.jl")
 
 using .Roots, .Min
 
-print(typeof(Roots.newton))
+export Roots, Min
 
 end # module
