@@ -20,7 +20,7 @@ quotient.
 function differentiate(
         f::Function, x::Real; δ::Real=1.0e-6, two_side::Bool=true
     )
-    h = δ * x
+    h = δ * x + δ
     if two_side == true
         deriv = (f(x+h) - f(x-h))/(2*h)
     else
