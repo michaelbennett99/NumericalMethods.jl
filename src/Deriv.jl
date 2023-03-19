@@ -73,7 +73,7 @@ component of `x` using a two-sided difference quotient.
 function partial(
         f::Function, x::AbstractVector, i::Integer; δ::Real=1.0e-6
     )
-    h = δ * x[i]
+    h = δ * x[i] + δ
     h_vct = zeros(length(x)); h_vct[i] = h
     deriv = (f(x .+ h_vct) - f(x .- h_vct))/(2 * h)
     return deriv
