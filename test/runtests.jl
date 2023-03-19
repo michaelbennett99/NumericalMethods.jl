@@ -1,7 +1,7 @@
 using NumericalMethods
 using Test
 
-@testset "Differentiation" begin
+@testitem "Differentiation" begin
     ≈(x, y) = isapprox(x, y; atol=1e-4, rtol=1e-4)
     x = collect(range(0, 2π, step=π/4))
     for x_i in x
