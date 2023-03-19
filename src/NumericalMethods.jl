@@ -7,4 +7,6 @@ include("Deriv.jl")
 include("Roots.jl")
 include("Min.jl")
 
+using .Roots, .Min
+
 end # module
