@@ -4,10 +4,12 @@ using StaticArrays, LinearAlgebra
 
 export linear_interpolation, cubic_interpolation
 
+abstract type AbstractInterpolator end
+
 """
 A callable linear interpolation object.
 """
-struct Linear{N, T}
+struct Linear{N, T} <: AbstractInterpolator
     x::SVector{N, T}
     y::SVector{N, T}
 end
@@ -64,7 +66,7 @@ end
 """
 A callable cubic spline interpolation object.
 """
-struct Spline{N, T}
+struct Spline{N, T} <: AbstractInterpolator
     x::SVector{N, T}
     y::SVector{N, T}
     k::SVector{N, T}
