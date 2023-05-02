@@ -1,7 +1,7 @@
 module Min
 
 using ForwardDiff
-using ..Deriv
+using ..NumericalMethods.Deriv
 
 export brent, newton
 
