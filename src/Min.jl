@@ -1,6 +1,7 @@
 module Min
 
 using ForwardDiff
+using ..Deriv
 
 export brent, newton
 
