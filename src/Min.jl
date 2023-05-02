@@ -1,5 +1,7 @@
 module Min
 
+using ForwardDiff
+
 export brent, newton
 
 const cgold = 0.3819660
