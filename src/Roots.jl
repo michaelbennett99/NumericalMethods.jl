@@ -34,50 +34,50 @@ function bisect(
     )
     fxlow = f(xlow; kwargs...)
     fxhigh = f(xhigh; kwargs...)
-    
-    if (fxlow*fxhigh > 0) 
+
+    if (fxlow*fxhigh > 0)
        throw(ArgumentError("Root not bracketed."))
-    elseif (xlow > xhigh) 
-       throw(ArgumentError("Brackets out of order.")) 
+    elseif (xlow > xhigh)
+       throw(ArgumentError("Brackets out of order."))
     end
-    
+
     diff = xhigh - xlow
     downwardsloping = (fxlow > 0)
-    
+
     niter = 0
     while niter < maxiter
         niter += 1
         xcur = (xlow + xhigh) / 2
         fxcur = f(xcur; kwargs...)
         if downwardsloping
-            if (fxcur > 0) 
+            if (fxcur > 0)
                 xlow = xcur
             else
                 xhigh = xcur
             end
         else
-            if (fxcur > 0) 
+            if (fxcur > 0)
                 xhigh = xcur
-            else 
+            else
                 xlow = xcur
             end
-        end               
-        diff = abs(xhigh-xlow)       
-        
-        if (diff < tol) 
+        end
+        diff = abs(xhigh-xlow)
+
+        if (diff < tol)
             break
         end
     end
- 
+
     if (diff > tol)
         error(
             "Did not converge: xlow = $xlow, xhigh = $xhigh, diff = $diff"
-        )           
+        )
     end
- 
+
     xroot = (xlow + xhigh)/2
     fxroot = f(xroot; kwargs...)
-    
+
     return xroot, fxroot, xlow, xhigh, niter
 end
 
@@ -105,6 +105,10 @@ function secant(
         f::Function, x_0::Real, x_1::Real;
         tol::Real=1e-6, max_iter::Integer=1000, kwargs...
     )
+    if (x_0 == x_1)
+        throw(ArgumentError("Initial guesses must be different."))
+    end
+
     iter = 0
     diff = tol + 1
     while diff > tol
@@ -127,59 +131,6 @@ function secant(
     end
 
     xroot = x_1
-    fxroot = f(xroot; kwargs...)
-
-    return xroot, fxroot, iter
-end
-
-"""
-    func_iter(f, x_0; λ::Real=0, tol=1e-6, max_iter=1000, kwargs...)
-
-Use the functional iteration method to find the root of a function f. This
-method works for functions from R^n to R^n, where n ≥ 1.
-
-# Arguments
-
-- `f::Function`: The function to find the root of.
-- `x_0::Union{AbstractVector{<:Real}, Real}`: The first guess.
-- `λ::Real=0`: The relaxation parameter.
-- `tol=1e-6`: The tolerance for the root.
-- `max_iter=1000`: The maximum number of iterations to perform.
-- `kwargs...`: Additional keyword arguments to pass to `f`.
-
-# Returns
-
-- `xroot`: The root of `f`.
-- `fxroot`: The value of `f` at the root.
-- `iter`: The number of iterations performed.
-"""
-function func_iter(
-        f::Function, x_0::Union{AbstractVector{<:Real}, Real};
-        λ::Real=0, tol=1e-6, max_iter::Integer=1000, kwargs...
-    )
-    g(x) = f(x; kwargs...) .+ x
-    
-    iter = 0
-    diff = tol + 1
-    while diff > tol
-        iter += 1
-
-        x_1 = (1 - λ) .* g(x_0) .+ λ .* x_0
-
-        diff = norm(x_1 - x_0)
-        
-        x_0 = x_1
-
-        if iter == max_iter
-            break
-        end
-    end
-
-    if (diff > tol)
-        error("Did not converge: diff = $diff")
-    end
-
-    xroot = x_0
     fxroot = f(xroot; kwargs...)
 
     return xroot, fxroot, iter
@@ -259,7 +210,7 @@ Use Newton's method to find the root of a multivariate function f: R^n → R.
 - `iter`: The number of iterations performed.
 """
 function newton(
-        func::Function, x_0::Union{AbstractVector{<:Real}, Real};
+        func::Function, x_0::AbstractVector{<:Real};
         tol::Real=1e-6, max_iter::Integer=1000, kwargs...
     )
     f(x) = func(x; kwargs...)
@@ -328,10 +279,10 @@ function brent(
     fa = f(a)
     fb = f(b)
 
-    if (fa*fb > 0) 
+    if (fa*fb > 0)
         throw(ArgumentError("Root not bracketed."))
-    elseif (a > b) 
-        throw(ArgumentError("Brackets out of order.")) 
+    elseif (a > b)
+        throw(ArgumentError("Brackets out of order."))
     end
 
     c = b
@@ -353,11 +304,11 @@ function brent(
             fb = fc
             fc = fa
         end
-        
+
         xm = 0.5 * (c - b)
         if (abs(xm) <= tol1 || fb == 0)
             iter = i
-            break
+            return b, fb, iter
         end
 
         if (abs(e) >= tol1 && abs(fa) > abs(fb))
@@ -403,7 +354,7 @@ function brent(
 
         fb = f(b)
     end
-    return b, fb, iter
+    error("Did not converge in $max_iter iterations")
 end
 
 end # module
