@@ -6,3 +6,7 @@ using NumericalMethods
 @testset "Deriv" begin
     include("Deriv.jl")
 end
+
+@testset "Interp" begin
+    include("Interp.jl")
+end
