@@ -6,3 +6,4 @@ using NumericalMethods
 include("Deriv.jl")
 include("Interp.jl")
 include("Min.jl")
+include("Roots.jl")
