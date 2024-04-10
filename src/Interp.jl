@@ -86,7 +86,9 @@ Construct a cubic interpolation function from the given points.
 
 - `f::Spline`: A callable cubic interpolation object.
 """
-function cubic_interpolation(x::Vector{<:Real}, y::Vector{<:Real})::Spline
+function cubic_interpolation(
+        x::Vector{<:Real}, y::Vector{<:Real}
+    )::Spline{length(x), Float64}
     if ! issorted(x)
         error("x must be sorted")
     end
@@ -115,7 +117,7 @@ function cubic_interpolation(x::Vector{<:Real}, y::Vector{<:Real})::Spline
     end
 
     vdp = Tridiagonal(dl, d, du) \ r
-    return Spline{n, eltype(x)}(x, y, vdp)
+    return Spline{n, Float64}(x, y, vdp)
 end
 
 """
