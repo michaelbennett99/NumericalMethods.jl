@@ -62,13 +62,13 @@ component of `x` using a two-sided difference quotient.
 - `f::Function`: The function to differentiate.
 - `x::AbstractVector`: The point at which to differentiate `f`.
 - `i::Integer`: The index of the component of `x` with respect to which to
-  differentiate `f`.
+    differentiate `f`.
 - `δ::Real=1.0e-6`: The step size to use in the difference quotient.
 
 # Returns
 
 - `deriv`: The partial derivative of `f` at `x` with respect to the
-  `i`th component of `x`.
+    `i`th component of `x`.
 """
 function partial(
         f::Function, x::AbstractVector, i::Integer; δ::Real=1.0e-6
