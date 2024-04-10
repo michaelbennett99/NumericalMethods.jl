@@ -18,6 +18,8 @@ end
     for x_i in x
         for y_i in x
             z_i = [x_i, y_i]
+            @test Deriv.partial(f, z_i, 1) ≈ f_1(z_i)
+            @test Deriv.partial(f, z_i, 2) ≈ f_2(z_i)
             @test Deriv.gradient(f, z_i) ≈ J(z_i)
             @test Deriv.hessian(f, z_i) ≈ H(z_i)
         end
