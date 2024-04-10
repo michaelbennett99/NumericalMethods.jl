@@ -3,10 +3,6 @@ using NumericalMethods
 
 ≈(x, y) = isapprox(x, y; atol=1e-4, rtol=1e-4)
 
-@testset "Deriv" begin
-    include("Deriv.jl")
-end
-
-@testset "Interp" begin
-    include("Interp.jl")
-end
+include("Deriv.jl")
+include("Interp.jl")
+include("Min.jl")
