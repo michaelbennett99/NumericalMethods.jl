@@ -1,8 +1,9 @@
 using NumericalMethods
-using TestItems
+using Test
 
-@testitem "Univariate" begin
-    ≈(x, y) = isapprox(x, y; atol=1e-4, rtol=1e-4)
+≈(x, y) = isapprox(x, y; atol=1e-4, rtol=1e-4)
+
+@testset "Univariate" begin
     x = collect(range(0, 2π, step=π/4))
     for x_i in x
         @test Deriv.differentiate(sin, x_i; two_side=false) ≈ cos(x_i)
@@ -11,8 +12,7 @@ using TestItems
     end
 end
 
-@testitem "Multivariate" begin
-    ≈(x, y) = isapprox(x, y; atol=1e-4, rtol=1e-4)
+@testset "Multivariate" begin
     x = collect(range(0, 2π, step=π/4))
     f(x) = x[1]^2 + x[2]^2
     f_1(x) = 2x[1]
