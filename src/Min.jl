@@ -1,7 +1,7 @@
 module Min
 
-using ForwardDiff
-using ..NumericalMethods.Deriv
+using ForwardDiff, LinearAlgebra
+using ..Deriv
 
 export brent, newton
 
@@ -9,7 +9,7 @@ const cgold = 0.3819660
 
 """
 This code, drawn from Numerical Recipes, implements Brent's method (without
-derivative) to minimize the function f. 
+derivative) to minimize the function f.
 
 # Arguments
 
@@ -41,66 +41,66 @@ function brent(
     fx = f(x)
     fv = fx
     fw = fx
-    
+
     d = 0
-    
+
     for iter in 1:max_iter
         xm = 0.5*(a+b)
         tol1 = rtol*abs(x) + atol
         tol2 = 2.0*tol1
-       
+
         if (abs(x-xm) <= (tol2-0.5*(b-a))) # Convergence check
             fmin = fx
             xmin = x
             niter = iter
             return xmin, fmin, niter
-        end   
-       
-        if (abs(e) > tol1) 
+        end
+
+        if (abs(e) > tol1)
             r = (x-w)*(fx-fv)
             q = (x-v)*(fx-fw)
             p = (x-v)*q - (x-w)*r
             q = 2.0*(q-r)
-            
-            if (q > 0) 
+
+            if (q > 0)
                 p = -p
-            end   
-            
+            end
+
             q = abs(q)
             etemp = e
             e = d
-            
+
             if ( (abs(p) >= abs(0.5*q*etemp)) |
-                (p <= (q*(a-x))) | (p >= (q*(b-x))) ) 
-                if (x >= xm) 
+                (p <= (q*(a-x))) | (p >= (q*(b-x))) )
+                if (x >= xm)
                 e = a - x
                 else
                 e = b - x
                 end
                 d = cgold*e
-            else   
+            else
                 d = p/q
                 u = x + d
                 if ( ((u-a) < tol2) | ((b-u) < tol2) )
                 d = abs(tol1)*sign(xm-x)
-                end   
-            end  
+                end
+            end
         else
-            if (x >= xm) 
+            if (x >= xm)
                 e = a - x
             else
                 e = b - x
-            end      
+            end
             d = cgold*e
         end
-        if (abs(d) >= tol1) 
+        if (abs(d) >= tol1)
             u = x + d
         else
             u = x + abs(tol1)*sign(d)
         end
         fu = f(u)
-        if (fu <= fx) 
-            if (u >= x) 
+        if (fu <= fx)
+            if (u >= x)
                 a = x
             else
                 b = x
@@ -112,7 +112,7 @@ function brent(
             x = u
             fx = fu
         else
-            if (u < x) 
+            if (u < x)
                 a = u
             else
                 b = u
@@ -122,12 +122,12 @@ function brent(
                 fv = fw
                 w = u
                 fw = fu
-            elseif ( (fu <= fv) | (abs(v-x) <= atol) | 
-                    (abs(v-w) <= atol) ) 
+            elseif ( (fu <= fv) | (abs(v-x) <= atol) |
+                    (abs(v-w) <= atol) )
                 v = u
                 fv = fu
             end
-        end 
+        end
     end
 
     throw(ConvergenceError("Maximum number of iterations exceeded in brent."))
@@ -158,7 +158,10 @@ function newton(
     )
     x_1 = x_0
     for i in 1:max_iter
-        x_2 = x_1 - numderiv_two_side(f, x_1, δ=δ)/numderiv_second(f, x_1, δ=δ)
+        x_2 = x_1 - (
+            Deriv.differentiate(f, x_1, δ=δ)
+            / Deriv.twice_differentiate(f, x_1, δ=δ)
+        )
         if isapprox(x_2, x_1, atol=atol, rtol=rtol)
             return x_2, f(x_2), i
         end
@@ -194,8 +197,8 @@ function newton(
     )
     x_1 = x_0
     for i in 1:max_iter
-        hess = Symmetric(hessian(f, x_1, δ=δ))
-        grad = gradient(f, x_1, δ=δ)
+        hess = Symmetric(Deriv.hessian(f, x_1, δ=δ))
+        grad = Deriv.gradient(f, x_1, δ=δ)
         Δx = hess\grad
         x_2 = x_1 - Δx
         if isapprox(x_2, x_1, atol=atol, rtol=rtol)
