@@ -1,8 +1,3 @@
-using NumericalMethods
-using Test
-
-≈(x, y) = isapprox(x, y; atol=1e-4, rtol=1e-4)
-
 @testset "Univariate" begin
     x = collect(range(0, 2π, step=π/4))
     for x_i in x
