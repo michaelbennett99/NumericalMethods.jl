@@ -1,4 +1,4 @@
-# Numerical Minimisation
+# Minimisation
 
 ```@meta
 CurrentModule = NumericalMethods.Min

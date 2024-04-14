@@ -1,4 +1,4 @@
-# Numerical Root Finding
+# Root Finding
 
 ```@meta
 CurrentModule = NumericalMethods.Roots

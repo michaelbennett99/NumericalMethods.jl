@@ -1,4 +1,4 @@
-# Numerical Differentiation
+# Differentiation
 
 ```@meta
 CurrentModule = NumericalMethods.Deriv

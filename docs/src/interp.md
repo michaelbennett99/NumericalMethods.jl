@@ -1,4 +1,4 @@
-# Numerical Interpolation
+# Interpolation
 
 ```@meta
 CurrentModule = NumericalMethods.Interp
