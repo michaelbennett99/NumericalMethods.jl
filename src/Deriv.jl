@@ -1,5 +1,11 @@
 module Deriv
 
+export differentiate
+export twice_differentiate
+export partial
+export gradient
+export hessian
+
 """
     differentiate(f::Function, x::Real; δ::Real=1.0e-6, two_side::Bool=true)
 

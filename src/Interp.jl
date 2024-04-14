@@ -2,7 +2,11 @@ module Interp
 
 using StaticArrays, LinearAlgebra
 
-export AbstractInterpolator, linear_interpolation, cubic_interpolation
+export AbstractInterpolator
+export Linear
+export linear_interpolation
+export Spline
+export cubic_interpolation
 
 abstract type AbstractInterpolator end
 

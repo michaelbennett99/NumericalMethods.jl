@@ -36,9 +36,9 @@ function bisect(
     fxhigh = f(xhigh; kwargs...)
 
     if (fxlow*fxhigh > 0)
-       throw(ArgumentError("Root not bracketed."))
+        throw(ArgumentError("Root not bracketed."))
     elseif (xlow > xhigh)
-       throw(ArgumentError("Brackets out of order."))
+        throw(ArgumentError("Brackets out of order."))
     end
 
     diff = xhigh - xlow
