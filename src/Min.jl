@@ -1,7 +1,9 @@
 module Min
 
-using ForwardDiff, LinearAlgebra
+using LinearAlgebra
+using ForwardDiff
 using ..Deriv
+using ..Errors: ConvergenceError
 
 export brent, newton
 

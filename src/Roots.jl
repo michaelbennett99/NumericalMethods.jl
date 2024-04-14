@@ -1,6 +1,9 @@
 module Roots
 
-using LinearAlgebra, ForwardDiff
+using LinearAlgebra
+using ForwardDiff
+
+using ..Errors: ConvergenceError
 
 export bisect, secant, brent, newton
 
@@ -70,9 +73,9 @@ function bisect(
     end
 
     if (diff > tol)
-        error(
+        throw(ConvergenceError(
             "Did not converge: xlow = $xlow, xhigh = $xhigh, diff = $diff"
-        )
+        ))
     end
 
     xroot = (xlow + xhigh)/2
@@ -127,7 +130,7 @@ function secant(
     end
 
     if (diff > tol)
-        error("Did not converge: diff = $diff")
+        throw(ConvergenceError("Did not converge: diff = $diff"))
     end
 
     xroot = x_1
@@ -181,7 +184,7 @@ function newton(
     end
 
     if (diff > tol)
-        error("Did not converge: diff = $diff")
+        throw(ConvergenceError("Did not converge: diff = $diff"))
     end
 
     xroot = x_0
@@ -233,7 +236,7 @@ function newton(
     end
 
     if (diff > tol)
-        error("Did not converge: diff = $diff")
+        throw(ConvergenceError("Did not converge: diff = $diff"))
     end
 
     xroot = x_0
@@ -354,7 +357,7 @@ function brent(
 
         fb = f(b)
     end
-    error("Did not converge in $max_iter iterations")
+    throw(ConvergenceError("Did not converge in $max_iter iterations"))
 end
 
 end # module
